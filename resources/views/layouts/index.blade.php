@@ -55,7 +55,7 @@
                 </form>
                 <hr>
                 <div class="table-responsive">
-                    @if($tahun)
+                    @if($tahun >0)
                     <table class="table table-hover table-bordered" style="margin: 0;">
                         <thead>
                             <tr class="table-dark">
@@ -90,30 +90,52 @@
                                    <td class="table-secondary" colspan="{{ count($groupBulan) + 13 }}"><b>{{ ucfirst($kategori) }}</b></td>
                                </tr>
                                @foreach($menus as $menu)
-                                   <tr>
-                                       <td>{{ $menu['menu'] }}</td>
-                                       @foreach ($transaksiData as $item)
-                                           @if ($item['menu'] === $menu['menu'])
-                                               <td>{{ number_format($item['total_per_bulan'], 0, ',', '.') }}</td>
-                                           @endif
-                                       @endforeach
-                                       <td>{{ number_format($totalSetahunPerMenu[$menu['menu']], 0, ',', '.') }}</td>
-                                   </tr>
-                               @endforeach
+                                    <tr>
+                                        <td>{{ $menu['menu'] }}</td>
+                                        @php
+                                            $dataCount = 0;
+                                        @endphp
+                                        @foreach ($transaksiData as $item)
+                                            @if ($item['menu'] === $menu['menu'])
+                                                <td>{{ isset($item['total_per_bulan']) ? number_format($item['total_per_bulan'], 0, ',', '.') : 0 }}</td>
+                                                @php
+                                                    $dataCount++;
+                                                @endphp
+                                            @endif
+                                        @endforeach
+                                        @for ($i = $dataCount; $i < 12; $i++)
+                                            <td></td>
+                                        @endfor
+                                        <td style="grid-column: 13;">
+                                            <b>{{ isset($totalSetahunPerMenu[$menu['menu']]) ? number_format($totalSetahunPerMenu[$menu['menu']], 0, ',', '.') : 0 }}</b>
+                                        </td>
+                                    </tr>
+                                @endforeach
                            @endforeach
 
 
                            <tr class="table-dark">
                                <td><b>Total</b></td>
+                               @php
+                                $dataCount = 0;
+                                @endphp
                                @foreach ($totalPerBulanSemuaMenu as $total)
-                                   <td>{{ number_format($total, 0, ',', '.') }}</td> <!-- Menampilkan total per bulan -->
-                               @endforeach
-                                    <td>{{ number_format($totalSetahun, 0, ',', '.') }}</td>
+                                <td>{{ isset($total) ? number_format($total, 0, ',', '.') : 'adjaja' }}</td>
+                                @php
+                                 $dataCount++;
+                                @endphp
+                              @endforeach
+                                    @for ($i = $dataCount; $i < 12; $i++)
+                                            <td></td>
+                                    @endfor
+                                <td colspan="13">
+                                     {{ isset($totalSetahun) ? number_format($totalSetahun, 0, ',', '.') : '' }}
+                                </td>
                            </tr>
                         </tbody>
                     </table>
-                    @else
-                    <p>Silakan pilih tahun terlebih dahulu</p>
+                    @elseif ($tahun == 0)
+                    <p></p>
                     @endif
                 </div>
             </div>
