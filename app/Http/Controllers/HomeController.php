@@ -44,10 +44,10 @@ class HomeController extends Controller
             // Menginisialisasi array total per bulan untuk setiap menu
             $totalPerMenuPerBulan = [];
 
-            // Mengelompokkan dan menghitung total per bulan untuk setiap menu
+            //sum per bulan untuk setiap menu
             foreach ($transaksiRawData as $transaksi) {
                 $tanggal = Carbon::parse($transaksi['tanggal']);
-                $bulan = $tanggal->format('F'); // Format bulan dalam teks, misalnya "January"
+                $bulan = $tanggal->translatedFormat('F'); // Format bulan dalam teks dalam bahasa yang disesuaikan (misalnya "Januari" dalam bahasa Indonesia)
                 $menu = $transaksi['menu'];
                 $total = $transaksi['total'];
 
@@ -61,7 +61,7 @@ class HomeController extends Controller
                 if (!isset($totalPerBulanSemuaMenu[$bulan])) {
                     $totalPerBulanSemuaMenu[$bulan] = 0;
                 }
-                $totalPerBulanSemuaMenu[$bulan] += $total;
+                $totalPerBulanSemuaMenu[$bulan];
 
                 // sum menu per tahun
                 if (!isset($totalSetahunPerMenu[$menu])) {
@@ -81,6 +81,12 @@ class HomeController extends Controller
                         'bulan' => $bulan,
                         'total_per_bulan' => $total,
                     ];
+
+                    // Tambahkan total transaksi saat ini ke total transaksi untuk bulan tersebut
+                    if (!isset($totalPerBulanSemuaMenu[$bulan])) {
+                        $totalPerBulanSemuaMenu[$bulan] = 0;
+                    }
+                    $totalPerBulanSemuaMenu[$bulan] += $total;
                 }
             }
 
